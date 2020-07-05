@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- Yes, you need an Internet connection to download Brython from the CDN -->
+    <script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js">
+    </script>
+</head>
+<!-- The Onload function call here is what tells Brython to convert the Python scripts
+referenced in the page into Javascript that the browser executes -->
+<body onload="brython()"> 
+<div>
+    <div>
+        <input id="slider1" type="range" min="0" max="10" step="0.01">
+        <span id="number1"> </span>
+        <label for="slider1">Slider 1</label>
+    </div>
+    <div>
+        <input id="slider2" type="range" min="0" max="20" step="0.01">
+        <span id="number2"> </span> 
+        <label for="slider2">Slider 2</label>
+    </div>
+</div>
+
+<script type="text/python">
+#This is all Python
+# Notice that Python-style comments work in here
+# Also note that Brython can load python from an external file. 
+# by specifying the 'src' attribute to the script tag 
+from browser import document, html, alert
+
+# Note how these Ids match up to the Id attribute in the HTML above
+slider1 = document.getElementById("slider1")
+number1 = document.getElementById("number1")
+slider2 = document.getElementById("slider2") 
+number2 = document.getElementById("number2")
+
+# Functions to update the sliders. Slider 2 is always 2x Slider 1
+def updateSlider1(event):
+    number1.textContent = slider1.value 
+    slider2.value = float(slider1.value) * 2
+    number2.textContent = slider2.value
+
+# Since the user chan change either slider, we need the recripacal 
+# operation here
+def updateSlider2(event):
+    number2.textContent = slider2.value
+    slider1.value = float(slider2.value) / 2
+    number1.textContent = slider1.value
+
+#Bind the event handlers to the HTML input tags
+# Note that this uses the 'input' event, as opposed
+# to "onclick" or "onchange". See the MDN docs for 
+# more info: 
+# https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/input_event
+slider1.bind("input",updateSlider1)
+slider2.bind("input",updateSlider2)
+ 
+
+# Silly hack to ensure that the numbers appear on page load
+# Better code wouldn't repeat itself like this. 
+number1.textContent = slider1.value 
+slider2.value = float(slider1.value) * 2
+number2.textContent = slider2.value
+
+</script>
+
+</body>
+
+</html>
